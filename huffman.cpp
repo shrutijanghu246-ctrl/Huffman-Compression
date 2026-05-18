@@ -32,3 +32,15 @@ HuffmanNode* buildTree(unordered_map<char, int>& freq){
 
     return pq.top();
 }
+
+void buildCodes(HuffmanNode* node, string code, unordered_map<char, string>& codes){
+    if(node == nullptr)return;
+
+    if(node->isLeaf()){
+        codes[node->ch] = code;
+        return;
+    }
+
+    buildCodes(node->left, code + "0" , codes);
+    buildCodes(node->right, code + "1", codes);
+}
