@@ -22,3 +22,9 @@ struct HuffmanNode{
         return !left && !right;
     }
 };
+
+struct NodeCmp {
+    bool operator()(HuffmanNode* a, HuffmanNode* b){
+        return a->freq > b->freq;
+    }
+};
