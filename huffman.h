@@ -18,7 +18,7 @@ struct HuffmanNode{
     HuffmanNode(int f, HuffmanNode* l, HuffmanNode* r)
         : ch('\0'), freq(f), left(l), right(r){}
 
-    bool isleaf() const {
+    bool isLeaf() const {
         return !left && !right;
     }
 };
