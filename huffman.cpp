@@ -81,3 +81,41 @@ void compress(const string& inputPath, const string& outputPath){
     cout << "Compressed Successfully!" << endl;
            
 }
+
+void decompress(const string& inputPath, const string& outputPath, HuffmanNode* root){
+    //step1: read the compressed file
+    ifstream inputFile(inputPath, ios::binary);
+
+    //step2: read the padding byte
+    int padding = inputFile.get();
+
+    //step3: read all bytes and convert back to bit string
+    string bitString = "";
+    char byte;
+    while(inputFile.get(byte)){
+        bitset<8> bits(byte);
+        bitString += bits.to_string();
+    }
+
+    inputFile.close();
+
+    //step4: remove padding bits from the end
+    bitString = bitString.substr(0, bitString.size() - padding);
+
+    //step 5: walk the tree to decode
+    ofstream outputFile(outputPath);
+    HuffmanNode* curr = root;
+    for(char bit : bitString){
+        if(bit == '0')curr = curr->left;
+        else curr = curr->right;
+
+        if(curr->isLeaf()){
+            outputFile.put(curr->ch);
+            curr = root;
+        }
+    }
+
+    outputFile.close();
+    cout<<"Decompressed successfully!"<<endl;
+
+}
