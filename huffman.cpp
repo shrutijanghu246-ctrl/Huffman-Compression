@@ -52,24 +52,29 @@ void compress(const string& inputPath, const string& outputPath){
     string text((istreambuf_iterator<char> (inputFile)),
                 istreambuf_iterator<char>());
     inputFile.close();
+    cout << "Step 1 done. Text: " << text << endl;
 
     //step2: build frequency tabel and tree
     unordered_map<char, int> freq = buildFreqTable(text);
     HuffmanNode* root = buildTree(freq);
+    cout << "Step 2b done. Tree built." << endl;
 
     //step3: generate codes
     unordered_map<char, string> codes;
     buildCodes(root, "", codes);
+    cout << "Step 3 done. Codes generated." << endl;
 
     //step4: encode the text into a bit string
     string bitString = "";
     for(char c : text){
         bitString += codes[c];
     }
+    cout << "Step 4 done. BitString: " << bitString << endl;
 
     //step5: write encoded bits to output file
     ofstream outputFile(outputPath, ios::binary);
-    int padding = 8 - bitString.size()%8;
+    int padding = (8 - bitString.size()%8) % 8;
+    bitString += string(padding, '0');
     outputFile.put(padding);
 
     for (int i = 0; i < bitString.size(); i += 8) {
