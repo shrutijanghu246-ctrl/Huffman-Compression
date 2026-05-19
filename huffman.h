@@ -28,3 +28,10 @@ struct NodeCmp {
         return a->freq > b->freq;
     }
 };
+
+// function declarations go here — outside everything
+std::unordered_map<char, int> buildFreqTable(const std::string& text);
+HuffmanNode* buildTree(std::unordered_map<char, int>& freq);
+void buildCodes(HuffmanNode* node, std::string code, std::unordered_map<char, std::string>& codes);
+void compress(const std::string& inputPath, const std::string& outputPath);
+void decompress(const std::string& inputPath, const std::string& outputPath, HuffmanNode* root);
