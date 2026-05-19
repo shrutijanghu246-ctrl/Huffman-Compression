@@ -1,6 +1,7 @@
 #include "huffman.h"
 #include <iostream>
 #include <fstream>
+#include <bitset>
 
 using namespace std;
 
@@ -43,4 +44,40 @@ void buildCodes(HuffmanNode* node, string code, unordered_map<char, string>& cod
 
     buildCodes(node->left, code + "0" , codes);
     buildCodes(node->right, code + "1", codes);
+}
+
+void compress(const string& inputPath, const string& outputPath){
+    //step1: read the input file
+    ifstream inputFile(inputPath);
+    string text((istreambuf_iterator<char> (inputFile)),
+                istreambuf_iterator<char>());
+    inputFile.close();
+
+    //step2: build frequency tabel and tree
+    unordered_map<char, int> freq = buildFreqTable(text);
+    HuffmanNode* root = buildTree(freq);
+
+    //step3: generate codes
+    unordered_map<char, string> codes;
+    buildCodes(root, "", codes);
+
+    //step4: encode the text into a bit string
+    string bitString = "";
+    for(char c : text){
+        bitString += codes[c];
+    }
+
+    //step5: write encoded bits to output file
+    ofstream outputFile(outputPath, ios::binary);
+    int padding = 8 - bitString.size()%8;
+    outputFile.put(padding);
+
+    for (int i = 0; i < bitString.size(); i += 8) {
+        bitset<8> bits(bitString.substr(i, 8));
+        outputFile.put(bits.to_ulong());
+    }
+
+    outputFile.close();
+    cout << "Compressed Successfully!" << endl;
+           
 }
